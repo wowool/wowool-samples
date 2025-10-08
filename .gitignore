@@ -2,3 +2,4 @@ env
 sdk/samples/rules/domain.dom
 sdk/samples/rules/domain.dom_inc
 .autoenv.zsh
+.env
