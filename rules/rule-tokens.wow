@@ -1,0 +1,49 @@
+// Rule tokens: what a single element of a rule can match.
+//
+//   "literal"      the word as written (case sensitive)
+//   'stem'         the dictionary form
+//   Pos            part of speech: Adj, Adv, Det, Nn, Num, Prep, Prop, V, ...
+//   +property      token property: +init-cap, +all-cap, +currency, ...
+//   <...,...>      combine several dimensions on the same token
+//
+// Every rule needs a capture group { ... } and an optional annotation = Name.
+
+// Text: "Hello World, I said Hello to the world."
+// matches: Hello World   ("World" must have a capital W)
+rule: { "Hello" "World" } = Greeting;
+
+// Text: "He left the house, leaving a trace of the leaves."
+// matches: left, leaving, leaves   (all have the stem 'leave')
+rule: { 'leave' } = LeaveStem;
+
+// Text: "My left neighbor left and went left."
+// matches: only the adjective "left" (literal and part of speech on one token)
+rule: { <"left",Adj> } = LeftAdjective;
+
+// Text: "The quick brown fox."
+// matches: quick, brown
+rule: { Adj } = AnyAdjective;
+
+// Text: "Mr Smith visited London and the USA."
+// matches: Mr, Smith, London (proper nouns with an initial capital), USA (all capitals)
+rule: { <+init-cap,Prop> } = CapitalProper;
+rule: { +all-cap } = AllCaps;
+
+// Text: "The stem and the leaves are part of a plant."
+// matches: stem, leaves   (an alternative of two tokens with a stem and a part of speech)
+rule: { ( <'stem',Nn> | <'leave',Nn> ) } = PartOfPlant;
+
+// Text: "He is a 3-year-old boy."
+// A hyphen is a token of its own, so this has 5 tokens.
+// matches: 3-year-old
+rule: { Num "-" "year" "-" "old" } = AgeExpression;
+
+// Text: "The parson's wife visited some housewives."
+// Regular expressions work inside stems and literals.
+// matches: wife, housewives
+rule: { '(.)*wife' } = WifeWord;
+
+// Text: "This is an extraordinarilylongwordthatshouldbematched."
+// length(min,max) skips tokens that are too short before running the expression.
+// matches: tokens of 20 characters or more
+rule: { <length(20,),"([a-z])+"> } = LongWord;

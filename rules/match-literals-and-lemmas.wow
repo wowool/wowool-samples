@@ -1,0 +1,24 @@
+// Matching literals and stems (lemmas), with lexicons and with rules.
+//
+// Text: "Mary ate one kiwi. John ate two kiwis. I love a KIWI."
+
+// A lexicon matches the literal by default: only the first "kiwi".
+lexicon: { kiwi } = FruitLexicon;
+
+// The same with a rule: double quotes address the literal.
+rule: { "kiwi" } = FruitRule;
+
+// Text: "I bought it. He is buying it. They will buy it."
+// input="lemma" matches the root form of the word, whatever its inflection.
+// matches: bought, buying, buy
+lexicon: (input="lemma") { buy } = BuyLemma;
+
+// input="normalized_lemma" also ignores case and accents.
+// Text: "She sells a Pêche."
+// matches: Pêche
+lexicon: (input="normalized_lemma") { peche } = NormalizedFruit;
+
+// In rules single quotes address the lemma.
+// Text: "I bought apples and she buys pears."
+// matches: bought, buys
+rule: { ( 'buy' | 'purchase' ) } = BuyingRule;

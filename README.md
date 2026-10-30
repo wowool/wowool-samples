@@ -12,15 +12,28 @@ First, install the dependencies:
     pip install -r requirements.txt
 
 
-Next, set the environment variables, you can request a key by logging in and generating one. 
-The samples are coded to use with the SDK and not the Cloud version.
-
-    export WOWOOL_SDK_KEY=[wowool_key]
-    
-
 ## Running the examples
 
 Now you can start running the samples. For example:
 
     python sdk/samples/english-entities.py
 
+## Custom lexicons
+
+See [the lexicon guide](rules/lexicons.md) for the syntax. The `.wow` samples are in `rules/`:
+
+- `lexicon-inputs.wow`: matching on different input streams (literal, stem, normalized).
+- `lexicon-wildcards.wow`: regular-expression wildcards in lexicon entries.
+- `lexicon-canonicals.wow`: assigning canonicals to entries.
+- `lexicon-canonical-match.wow`: matching on canonicals with `input="canonical"` (runs after `lexicon-canonicals.wow`).
+
+Try one with the SDK, e.g. `Domain(source=Path("rules/lexicon-inputs.wow").read_text())`.
+
+## Rules
+
+See [the rules guide](rules/rules.md). The `.wow` samples in `rules/` are:
+
+- `rule-tokens.wow`: literals, stems, part of speech, properties and regular expressions.
+- `rule-operators.wow`: any token, repetition, shortest/longest match and unordered matching.
+- `rule-annotations.wow`: annotations as elements, containers, anchors, attributes and negation (needs an `english,entity` pipeline).
+- `match-*.wow`: samples that follow the documentation page on matching and capturing (literals, lemmas, part of speech, character classes, wildcards, compounds, canonicals, context rules, semantic rules and filtering). They are listed in the rules guide.

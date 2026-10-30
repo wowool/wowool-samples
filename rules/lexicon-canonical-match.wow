@@ -1,0 +1,9 @@
+// Match on canonicals: input="canonical" matches the canonical of a concept
+// instead of repeating every variant.
+// The canonical must already be set by an earlier domain, so compile this file
+// as a separate domain that runs after lexicon-canonicals.wow.
+//
+// Text: "IBM and Big Blue are the same company. Ibm shares rose."
+// matches: IBM, Big Blue, Ibm
+
+lexicon: (input="canonical") { International Business Machines } = Employer;

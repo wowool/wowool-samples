@@ -1,0 +1,57 @@
+// Rules on annotations: lexicons, other rules and the english entity domain
+// are all reusable as elements. Run this file as a domain on top of
+// english + entity.
+
+lexicon: { Merkel, Putin, Beyoncé } = Celebrity;
+
+// Text: "Angela Merkel visited Paris. Mr Smith visited Paris."
+// A rule can use annotations of earlier domains (Person, City, ...).
+// matches: Angela Merkel visited Paris, Smith visited Paris
+rule: { Person 'visit' (City | Person) } = PersonVisit;
+
+// Rules can reuse the annotations of other rules, here with a shortest match.
+// Text: "Angela Merkel visited Paris in February."
+// matches: Angela Merkel visited Paris in February
+rule: { PersonVisit .. Month } = PersonVisitMonth;
+
+// Annotations are containers: Person[ ... ] matches elements inside them.
+// Text: "Angela Merkel visited Paris. John Smith visited Paris."
+// matches: Angela Merkel visited Paris   (only a Person containing a Celebrity)
+rule: { Person[ Celebrity ] 'visit' (City | Person) } = CelebrityVisit;
+
+// '^' anchors the content to the start or end of the container.
+// Text: "Samsung and Apple beat British Airways."
+// matches: Samsung, Apple   (companies with a one word name)
+rule: { Company[ ^ <> ^ ] } = OneWordCompany;
+
+// Attributes of annotations can be used as a condition.
+// Text: "The summit in Madrid ended."
+// matches: summit in Madrid
+rule: { 'summit' 'in' City@(country="Spain") } = SpanishSummit;
+
+// Formatted attributes build attributes from what the rule captured.
+// Text: "Twitter CEO Jack Dorsey spoke."
+// matches: Person Jack Dorsey with position="CEO"
+rule: {
+    Position
+    { Person } = Person@( position=f"{rule.Position.literal()}" )
+};
+
+// Sentence is a container for a whole sentence.
+// Text: "Is this helpful ? It is."
+// matches: Is this helpful ?
+rule: {
+    Sentence [
+        { (<>)* <"\?"> } = QuestionSentence
+    ]
+};
+
+// A negative lookahead !( ... ) matches when the expression does NOT follow.
+// The token behind it still has to be consumed with <>.
+// Text: "I saw a green train and a green car."
+// matches: green train
+rule: { 'green' !( 'car' ) <> } = NotAGreenCar;
+
+// Text: "He studied at the University of Art, not the University of Antwerp."
+// matches: University of Art   (Antwerp is a City)
+rule: { 'University' 'of' !( City ) <> } = UniversityNotCity;

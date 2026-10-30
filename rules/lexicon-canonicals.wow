@@ -1,0 +1,12 @@
+// Canonicals: give all variants of an entry the same canonical form.
+// Use 'entry : canonical', or set a canonical attribute on the concept.
+//
+// Text: "IBM and Big Blue are the same company. Ibm shares rose. NYC is big."
+// To match on these canonicals, see lexicon-canonical-match.wow.
+
+lexicon: (input="normalized_literal") {
+    IBM : International Business Machines,
+    Big Blue : International Business Machines,
+} = TechCompany@(sector="it");
+
+lexicon: { NYC } = Town@(canonical="New York City", country="USA");

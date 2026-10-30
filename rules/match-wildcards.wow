@@ -1,0 +1,18 @@
+// Wildcards in lexicons and rules.
+
+// Text: "I worked at Mickysoft and Ashlar Inc. last year."
+// matches: Mickysoft, Ashlar Inc.
+lexicon: { (.)* (I|i)nc\. , (.)*soft } = Company;
+
+// Text: "I was thinking while I was running that eating is a worldly pleasure."
+// A wildcard inside a literal token.
+// matches: thinking, running, eating
+rule: { "(.)*ing" } = IngWord;
+
+// Wildcards at the token level: optional and repeated elements.
+// Text: "I bought apples. He purchased a fancy fast car. That's life."
+// matches: bought apples, purchased a fancy fast car
+rule: {
+    ( 'buy' | 'purchase' )
+    { (Det)? (Adj)* Nn } = Purchased
+} = BuyingThings;

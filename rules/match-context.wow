@@ -1,0 +1,25 @@
+// Context rules: use the surrounding words to find or classify something.
+// Text outside the inner capture group only provides context.
+
+// Text: "A Mercedes is a German car. Mercedes is a nice person."
+// Annotate an unknown proper noun from its context.
+// matches: only the first Mercedes, with country="Germany"
+rule: {
+    { Prop } = Car@(country="Germany")
+    "is" "a" "German" "car"
+};
+
+// Text: "Haduki Dingledong was a tennis player."
+// An unknown name is a SportsPerson because of the sentence it appears in.
+// matches: Haduki Dingledong as SportsPerson, tennis as Sports
+lexicon: { baseball, tennis } = Sports;
+
+rule: {
+    { (<Prop>)+ } = SportsPerson
+    'be' 'a' Sports 'player'
+};
+
+// Text: "The gunman killed Anna Jones."
+// Who is the victim?
+// matches: Anna Jones as Victim
+rule: { 'kill' { (<Prop>)+ } = Victim };

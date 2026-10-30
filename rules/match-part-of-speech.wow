@@ -1,0 +1,22 @@
+// Matching part of speech.
+//
+// Text: "The quick brown fox jumped over the lazy dog."
+// A sequence of adjectives and nouns, ending on a noun.
+// matches: quick brown fox, lazy dog
+rule: { ( Nn | Adj )+ Nn } = NounSequence;
+
+// Text: "I work at the Hospital. The work there is good."
+// <'work',V> combines the lemma with the part of speech.
+// matches: only the first "work", the second one is a noun
+rule: { <'work',V> } = Activity;
+
+// Text: "She said it is 25 degrees. He has two dogs."
+// Numbers have their own part of speech.
+// matches: 25, two
+rule: { Num } = NumberToken;
+
+// Text: "He ran quickly to the very old house."
+// Umbrella tags (Adv, Adj) match all their variants.
+// matches: quickly, very (as Adv); very old (adverb followed by an adjective)
+rule: { Adv } = AdverbToken;
+rule: { Adv <Adj> } = AdverbBeforeAdjective;

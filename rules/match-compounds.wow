@@ -1,0 +1,14 @@
+// Compounds, for languages with compounding (Dutch, German, Swedish, ...).
+// These samples use the dutch pipeline.
+//
+// Text: "Ik heb een grote groene bakfiets en een kleine koersfiets om op het fietspad te rijden."
+
+// The head is the last part of the compound.
+// matches: bakfiets, koersfiets   (not fietspad)
+lexicon: (input="head") { fiets } = FietsHead;
+rule: { <h'fiets'> } = FietsHeadRule;
+
+// A component can be any part of the compound.
+// matches: bakfiets, koersfiets, fietspad
+lexicon: (input="component") { fiets } = FietsComponent;
+rule: { <c'fiets'> } = FietsComponentRule;

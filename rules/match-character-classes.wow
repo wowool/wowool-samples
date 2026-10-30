@@ -1,0 +1,42 @@
+// Character classes in lexicons and rules.
+//
+//   [:alpha:]  alphabetic        [:alnum:]  alphanumeric   [:digit:]  digit
+//   [:xdigit:] hexadecimal       [:lower:]  lowercase      [:upper:]  uppercase
+//   [:range(a-b):]  a character range
+//
+// They combine with the usual operators: ()+ ()* ()? (){n,m}.
+
+// Text: "Seen plates AA234 and FZ93, but not aa123 or A123."
+// two capitals followed by 2 or 3 digits
+// matches: AA234, FZ93
+lexicon: { ([:upper:]){2}([:digit:]){2,3} } = PlateNumber;
+
+// The same, with explicit ranges.
+lexicon: { ([:range(A-Z):]){2}([:range(0-9):]){2,3} } = PlateNumberRange;
+
+// Text: "So these are lower case words. But NOT tHesE ONEs."
+// matches: every word made of lowercase letters only (so, these, are, lower, ...)
+// but not tHesE or ONEs
+lexicon: { ([:lower:])+ } = AllLowerCase;
+
+// Text: "These are Initial Uppercase words."
+// matches: These, Initial, Uppercase
+lexicon: { [:upper:]([:lower:])+ } = InitialCapital;
+
+// Text: "Order 392742 and 123456 shipped."
+// matches: 392742, 123456   (exactly six digits)
+lexicon: { ([:digit:]){6} } = SixDigits;
+
+// Text: "The checksum is fd8ae9581."
+// matches: fd8ae9581
+lexicon: { ([:xdigit:]){9} } = HexNumber;
+
+// Text: "My password is pw123 and pwd3a5y."
+// matches: pw123, pwd3a5y
+lexicon: { pw([:alnum:])+ } = PasswordLike;
+
+// Text: "Ik zag strang34 en 45worD00s."
+// In a rule a token can combine a character class with a token property:
+// alphanumeric words containing a digit that are not found in the dictionary (+nf)
+// matches: strang34, 45worD00s (and also unknown codes such as pw123 or AA234)
+rule: { <"([:alnum:])*([:digit:])([:alnum:])*", +nf> } = AlnumUnknown;

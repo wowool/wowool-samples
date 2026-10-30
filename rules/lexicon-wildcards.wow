@@ -1,0 +1,31 @@
+// Wildcards: lexicon entries accept regular-expression operators.
+//   (.)+  one or more characters     (.)*  zero or more characters
+//   (x)?  optional                   (a|b) alternatives
+//   (ha)+ repetition                 (x){n,m} between n and m repetitions
+// Operators must be applied to a parenthesized group, and a space inside an
+// entry is a regular character.
+//
+// Text: "Lange Leemstraat is near the housewife shop. She said hahaha. The colours
+// are nice. Colon cancer and small intestine cancer. A single female or a single
+// white female tenant."
+
+// matches: Leemstraat
+lexicon: (input="normalized_literal") {
+    (.)+straat,
+    (.)+straße,
+} = StreetWord;
+
+// matches: housewife
+lexicon: (input="normalized_literal") { house(.)* } = HousePrefix;
+
+// matches: hahaha
+lexicon: (input="normalized_literal") { (ha)+ } = Laughter;
+
+// matches: colour, colours
+lexicon: (input="normalized_literal") { colour(s)? } = Colour;
+
+// matches: Colon cancer, small intestine cancer
+lexicon: (input="normalized_literal") { (colon|(small )?intestine) cancer } = CancerType;
+
+// matches: single female, single white female
+lexicon: (input="normalized_literal") { single (white )?female } = CandidateRenter;

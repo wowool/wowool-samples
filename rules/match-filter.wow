@@ -1,0 +1,11 @@
+// Filtering entities with wow::filter: remove a concept from the output.
+// This has to run after the entity domain, which creates the annotations.
+// (The documentation shows entity="Person", this SDK expects concept="Person".)
+//
+// Text: "Jack Daniels and Emily Chen were mentioned by Sarah Johnson."
+// matches: "Jack Daniels" is a whiskey, so it loses its Person annotation;
+//          Emily Chen and Sarah Johnson stay Person
+
+lexicon: { Jack Daniels } = NoPerson;
+
+rule: { NoPerson } = wow::filter@(concept="Person");

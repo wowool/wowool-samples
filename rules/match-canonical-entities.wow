@@ -1,0 +1,8 @@
+// Matching on canonicals: use input="canonical" to find an entity by its
+// canonical, so that variants and pronouns follow. The entity domain has to run
+// first, as it sets the canonicals.
+//
+// Text: "Emmanuel Macron won the elections. He was happy about it. The main opponent of Macron was Marine Le Pen."
+// matches: Emmanuel Macron, He, Macron
+
+lexicon: (input="canonical") { Joe Biden, Emmanuel Macron, Boris Johnson } = President;

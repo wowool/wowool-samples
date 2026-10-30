@@ -1,4 +1,4 @@
-wowool-sdk
+nlp-wowool-sdk
 wowool-english
 wowool-dutch
 wowool-anonymizer

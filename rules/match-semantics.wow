@@ -1,0 +1,17 @@
+// Semantic rules: build on the annotations of lexicons and other rules,
+// and give the result attributes.
+//
+// Text: "A fancy nice car is better than an ugly polluting truck."
+// matches: fancy, nice as positive_adj; ugly, polluting as negative_adj;
+//          "fancy nice car" as Sentiment type="positive";
+//          "ugly polluting truck" as Sentiment type="negative"
+
+lexicon: { fancy, nice } = positive_adj;
+lexicon: { ugly, polluting } = negative_adj;
+
+rule: { (positive_adj)+ <Nn> } = Sentiment@(type="positive");
+rule: { (negative_adj)+ <Nn> } = Sentiment@(type="negative");
+
+// Attributes can be used as a condition in later rules.
+// matches: "fancy nice car" again, now only the positive ones
+rule: { Sentiment@(type="positive") } = PositiveOpinion;

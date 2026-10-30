@@ -1,0 +1,23 @@
+// Input streams: which form of the token a lexicon entry is matched against.
+//
+//   (default)            literal: the word exactly as written
+//   stem                 dictionary form (kiwis -> kiwi), case sensitive
+//   normalized_literal   literal, ignoring case and accents
+//   normalized_stem      stem, ignoring case and accents
+//
+// Text: "I ate one kiwi. He ate two kiwis. KIWI is a fruit. Agnès and AGNES like fruit."
+
+// matches: kiwi
+lexicon: { kiwi } = LiteralMatch;
+
+// matches: kiwi, kiwis
+lexicon: (input="stem") { kiwi } = StemMatch;
+
+// matches: kiwi, KIWI
+lexicon: (input="normalized_literal") { kiwi } = NormalizedLiteralMatch;
+
+// matches: kiwi, kiwis, KIWI
+lexicon: (input="normalized_stem") { kiwi } = NormalizedStemMatch;
+
+// matches: Agnès, AGNES
+lexicon: (input="normalized_literal") { agnes } = Friend;

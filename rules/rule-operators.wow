@@ -1,0 +1,53 @@
+// Rule operators: combine elements and control how far a match may stretch.
+//
+//   <>        any token                   (x)? (x)* (x)+ (x){n,m}  token repetition
+//   (a | b)   alternatives                ..   shortest match
+//   .?        shortest span               ...  longest match
+//   %%        unordered shortest match    %    unordered adjacent
+
+// Text: "He did not kill his wife but she did kill him."
+// 'kill' followed by at most 3 tokens, ending on a noun.
+// matches: kill his wife
+rule: { 'kill' (<>){0,3} Nn } = KillObject;
+
+// Text: "Tom bought a car and Bob purchased a bicycle."
+// matches: bought a car, purchased a bicycle
+rule: { ('buy'|'purchase') (Det)? (Adj)* Nn } = Purchase;
+
+// Text: "He visited Japan and Donald Trump avoided China."
+// '..' stops at the first proper noun it finds.
+// matches: visited Japan
+rule: { 'visit' .. Prop } = VisitShortest;
+
+// Same text, '...' stretches to the last proper noun.
+// matches: visited Japan and Donald Trump avoided China
+rule: { 'visit' ... Prop } = VisitLongest;
+
+// Text: "On Tuesday John Murphy was born."  /  "John Murphy was born on Tuesday."
+// '%%' accepts the elements in any order. The parentheses are mandatory.
+// matches both sentences
+rule: { ( "born" %% 'Tuesday' ) } = BornOnTuesday;
+
+// Text: "He did not agree."  /  "He will not do it."
+// '%' accepts two adjacent elements in any order.
+// matches: did not, not do
+rule: { ( 'do' % 'not' ) } = DoNot;
+
+// Text: "As a conclusion, reindeers are better than people."
+// Everything outside the inner capture group is only context.
+// matches: reindeers are better than people.
+rule: {
+    'as' 'a' 'conclusion' <"\,">
+    { (<>)+ } = ConclusionSentence
+};
+
+// Text: "Mr Johann Gambolputty was here."
+// Capture groups can be nested. Only the inner groups become annotations.
+// matches: First=Johann, Last=Gambolputty, Person=Johann Gambolputty
+rule: {
+    "Mr"
+    {
+        { Prop } = First
+        { Prop } = Last
+    } = FullName
+};
